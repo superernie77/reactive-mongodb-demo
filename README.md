@@ -7,3 +7,7 @@ Technologies used:
 - MongoDB
 - spring-boot-data-mongodb-reactive
 - Lombok
+
+
+You will need a installation of MongoDB on port 27017 on your machine to run this project.
+https://www.mongodb.com/download-center#community

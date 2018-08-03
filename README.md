@@ -6,3 +6,4 @@ Technologies used:
 - Spring-Boot 2
 - MongoDB
 - spring-boot-data-mongodb-reactive
+- Lombok

@@ -1,6 +1,6 @@
 # reactive-mongodb-demo
 
-Demo app using the Sprong 5 webflux API with MongoDB.
+Demo app using the Spring 5 webflux API with reactive MongoDB.
 
 Technologies used:
 - Spring-Boot 2

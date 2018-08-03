@@ -1,6 +1,5 @@
 package com.se77.reactivemongodb.demo;
 
-import java.awt.MediaTracker;
 import java.time.Duration;
 import java.util.Date;
 import java.util.Random;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.function.server.RouterFunction;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

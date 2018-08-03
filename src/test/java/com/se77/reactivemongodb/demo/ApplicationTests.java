@@ -1,4 +1,4 @@
-package com.se77.reactivemongodb.dome;
+package com.se77.reactivemongodb.demo;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,5 +1,7 @@
 package com.se77.reactivemongodb.demo;
 
+import java.awt.MediaTracker;
+import java.time.Duration;
 import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
@@ -13,76 +15,113 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.server.RouterFunction;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 @SpringBootApplication
 public class Application {
-	
+
 	@Bean
 	CommandLineRunner demo(MovieRepository movieRepo) {
-		
-		
-		
+
 		return args -> {
-			
-			movieRepo.deleteAll().subscribe(null, null, () -> Stream.of("Aeon Flux", "Enter the Mono<Void>", "The Fluxinator", "Silence of the Lambdas")
-					.map(name -> new Movie(UUID.randomUUID().toString(), name , randomGenre() ))
-					.forEach(movie -> movieRepo.save(movie).subscribe(System.out::println)));
+
+			movieRepo.deleteAll().subscribe(null, null,
+					() -> Stream.of("Aeon Flux", "Enter the Mono<Void>", "The Fluxinator", "Silence of the Lambdas")
+							.map(name -> new Movie(UUID.randomUUID().toString(), name, randomGenre()))
+							.forEach(movie -> movieRepo.save(movie).subscribe(System.out::println)));
 		};
 	}
-	
-	
-	
-	
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
-	
+
 	private String randomGenre() {
-		String [] genres =  "horror, romance,drama".split(",");
-		
+		String[] genres = "horror, romance,drama".split(",");
+
 		return genres[new Random().nextInt(genres.length)];
 	}
 }
-
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 class MovieEvent {
-	
+
 	private Movie movie;
-	
+
 	private Date date;
-	
+
 	private String user;
 }
 
+@Component
 class MovieService {
-	
+
 	@Autowired
 	private MovieRepository movieRepo;
-	
-//	public Flux<MovieEvent> getEvents(){	
-//	}
-	
-	public Flux<Movie> getAll(){
+
+	public String genereteUser() {
+		String[] genres = "Josh, Ernie, Bob".split(",");
+		return genres[new Random().nextInt(genres.length)];
+	}
+
+	public Flux<MovieEvent> getEvents(Movie movie){
+		Flux<Long> interval = Flux.interval(Duration.ofSeconds(1));
+		
+		Flux<MovieEvent> events = Flux.fromStream(Stream.generate( () -> new MovieEvent(movie, new Date(), genereteUser())));
+		
+		return Flux.zip(interval, events).map(Tuple2::getT2);
+	}
+
+	public Flux<Movie> getAll() {
 		return movieRepo.findAll();
 	}
-	
-	public Mono<Movie> getById(String id){
+
+	public Mono<Movie> getById(String id) {
 		return movieRepo.findById(id);
 	}
 }
 
-interface MovieRepository extends ReactiveMongoRepository<Movie, String>{
+@RestController
+@RequestMapping("/movies")
+class MovieRestController {
 	
+	@Autowired
+	private MovieService service;
+	
+	@GetMapping(value = "/{id}/events" , produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+	public Flux<MovieEvent> getEvents(@PathVariable String id) {
+		return service.getById(id).flatMapMany(service::getEvents);
+	}
+	
+	@GetMapping
+	public Flux<Movie> getAll(){
+		return service.getAll();
+	}
+	
+	@GetMapping("/{id}")
+	public Mono<Movie> getById(@PathVariable String id) {
+		return service.getById(id);
+	}
+	
+}
+
+interface MovieRepository extends ReactiveMongoRepository<Movie, String> {
+
 }
 
 @Document
@@ -90,11 +129,11 @@ interface MovieRepository extends ReactiveMongoRepository<Movie, String>{
 @NoArgsConstructor
 @AllArgsConstructor
 class Movie {
-	
+
 	@Id
 	private String id;
-	
+
 	private String title;
-	
+
 	private String genre;
 }

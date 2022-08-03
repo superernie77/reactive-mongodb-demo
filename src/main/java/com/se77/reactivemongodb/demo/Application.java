@@ -31,6 +31,11 @@ import reactor.util.function.Tuple2;
 @SpringBootApplication
 public class Application {
 
+	/**
+	 * Resets Data in MongoDB.
+	 * @param movieRepo
+	 * @return
+	 */
 	@Bean
 	CommandLineRunner demo(MovieRepository movieRepo) {
 
@@ -47,6 +52,10 @@ public class Application {
 		SpringApplication.run(Application.class, args);
 	}
 
+	/**
+	 * Generates a random Genre-String
+	 * @return the genre
+	 */
 	private String randomGenre() {
 		String[] genres = "horror, romance,drama".split(",");
 
@@ -72,23 +81,41 @@ class MovieService {
 	@Autowired
 	private MovieRepository movieRepo;
 
-	public String genereteUser() {
-		String[] genres = "Josh, Ernie, Bob".split(",");
-		return genres[new Random().nextInt(genres.length)];
+	/**
+	 * Generates a Random Username
+	 * @return
+	 */
+	public String generateUserName() {
+		String[] users = "Josh, Ernie, Bob".split(",");
+		return users[new Random().nextInt(users.length)];
 	}
 
+	/**
+	 * Generates a Flux of Movie-Events for a Movie 
+	 * @param movie Movie to generate Events for
+	 * @return Flux of Events
+	 */
 	public Flux<MovieEvent> getEvents(Movie movie){
 		Flux<Long> interval = Flux.interval(Duration.ofSeconds(1));
 		
-		Flux<MovieEvent> events = Flux.fromStream(Stream.generate( () -> new MovieEvent(movie, new Date(), genereteUser())));
+		Flux<MovieEvent> events = Flux.fromStream(Stream.generate( () -> new MovieEvent(movie, new Date(), generateUserName())));
 		
 		return Flux.zip(interval, events).map(Tuple2::getT2);
 	}
 
+	/**
+	 * Returns all Movies in the DB
+	 * @return Flux of all Movies
+	 */
 	public Flux<Movie> getAll() {
 		return movieRepo.findAll();
 	}
 
+	/**
+	 * Returns a Movie by Id
+	 * @param id id of the movie
+	 * @return
+	 */
 	public Mono<Movie> getById(String id) {
 		return movieRepo.findById(id);
 	}

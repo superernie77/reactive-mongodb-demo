@@ -10,12 +10,14 @@ Technologies used:
 
 
 You will need a installation of MongoDB on port 27017 on your machine to run this project.
+
 https://www.mongodb.com/download-center#community
+
 
 Acces to Heroku demo deployment:
 
-List of all movies
+List of all movies:
 https://reactive-spring-demo.herokuapp.com/movies
 
-Reactive stream of movie events
+Reactive stream of movie events:
 https://reactive-spring-demo.herokuapp.com/movies/[id]/events

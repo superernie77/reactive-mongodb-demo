@@ -37,7 +37,7 @@ public class Application {
 	 * @return
 	 */
 	@Bean
-	CommandLineRunner demo(MovieRepository movieRepo) {
+	private CommandLineRunner demo(MovieRepository movieRepo) {
 
 		return args -> {
 

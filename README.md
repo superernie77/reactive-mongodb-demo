@@ -3,9 +3,10 @@
 Demo app using the Spring 5 webflux API with reactive MongoDB.
 
 Technologies used:
-- Spring-Boot 2
+- Spring-Boot 2.5.7
 - MongoDB
 - spring-boot-data-mongodb-reactive
+- spring-boot-webflux
 - Lombok
 
 

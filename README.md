@@ -1,24 +1,26 @@
 # reactive-mongodb-demo
 
-Demo app using the Spring 5 webflux API with reactive MongoDB.
+Demo app using Spring 6 Webflux API with reactive MongoDB.
 
 Technologies used:
-- Spring-Boot 2.5.7
+- Spring-Boot 3.1.1
 - MongoDB
 - spring-boot-data-mongodb-reactive
-- spring-boot-webflux
-- Lombok
+- spring-boot-webflux / reactor
+- Testcontainers
 
 
-You will need a installation of MongoDB on port 27017 on your machine to run this project.
+You will need to have a running Docker deamon when starting the application. 
 
-https://www.mongodb.com/download-center#community
+Use the class TestSpringBoot31TestcontainerSupportApplication to start the application with an embeded MongoDB if you don't have one installed locally. 
 
-
-Acces to Heroku demo deployment:
 
 List of all movies:
-https://reactive-spring-demo.herokuapp.com/movies
+```
+http://localhost:8080/movies
+```
 
 Reactive stream of movie events:
-https://reactive-spring-demo.herokuapp.com/movies/[id]/events
+```
+https://localhost:8080/movies/[id]/events
+```

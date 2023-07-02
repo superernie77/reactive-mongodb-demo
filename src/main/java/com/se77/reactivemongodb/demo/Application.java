@@ -10,13 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
-import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,9 +21,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
@@ -66,17 +60,8 @@ public class Application {
 	}
 }
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-class MovieEvent {
 
-	private Movie movie;
-
-	private Date date;
-
-	private String user;
-}
+record MovieEvent(Movie movie,Date date, String user){};
 
 @Component
 class MovieService {
@@ -153,15 +138,4 @@ interface MovieRepository extends ReactiveMongoRepository<Movie, String> {
 }
 
 @Document
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-class Movie {
-
-	@Id
-	private String id;
-
-	private String title;
-
-	private String genre;
-}
+record Movie(@Id String id, String title, String genre){};
